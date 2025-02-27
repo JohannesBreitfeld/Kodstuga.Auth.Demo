@@ -10,10 +10,17 @@ public static class AnimalEndpoints
         var group = app.MapGroup("api/animals");
 
         group.MapGet("", GetAll);
+        
         group.MapGet("{id}", GetById);
-        group.MapPost("", Post);
-        group.MapPut("", Put);
-        group.MapDelete("{id}", Delete);
+        
+        group.MapPost("", Post)
+            .RequireAuthorization();
+        
+        group.MapPut("", Put)
+            .RequireAuthorization();
+        
+        group.MapDelete("{id}", Delete)
+            .RequireAuthorization("AdminOnly");
 
         return group;
     }
