@@ -21,7 +21,7 @@ builder.Services.AddDbContext<AppDbContext>(
 builder.Services.AddAuthorization(options =>
 {
     options.AddPolicy("AdminOnly", policy =>
-        policy.RequireRole("ADMIN")); // Kräver att användaren har rollen "Admin"
+        policy.RequireRole("ADMIN")); // Kräver att användaren har rollen "ADMIN"
 });
 
 

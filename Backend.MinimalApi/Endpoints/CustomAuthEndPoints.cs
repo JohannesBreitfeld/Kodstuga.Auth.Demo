@@ -9,6 +9,7 @@ public static class CustomAuthEndPoints
     public static IEndpointRouteBuilder MapCustomAuthEndpoints(this IEndpointRouteBuilder app)
     {
         app.MapPost("register-admin", RegisterAdmin);
+        app.MapGet("roles", GetRoles).RequireAuthorization();
 
         return app;
     }
@@ -29,10 +30,28 @@ public static class CustomAuthEndPoints
         {
             await roleManager.CreateAsync(new IdentityRole("ADMIN"));
         }
-
+        
         await userManager.AddToRoleAsync(user, "ADMIN");
 
         return Results.Ok();
+    }
+
+    private static IResult GetRoles(ClaimsPrincipal user)
+    {
+        if (user.Identity is not null && user.Identity.IsAuthenticated)
+        {
+            var identity = (ClaimsIdentity)user.Identity;
+            var roles = identity.FindAll(identity.RoleClaimType)
+                .Select(c =>
+                    new
+                    {
+                        c.Value,
+                    });
+
+            return TypedResults.Json(roles);
+        }
+
+        return Results.Unauthorized();
     }
 
 }
